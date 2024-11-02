@@ -27,13 +27,15 @@ public class Dipendente {
     @Column(nullable = false, unique = true)
     private String email;
 
-    // aggiungere un campo per l'immagine del profilo in un secondo momento
+    @Column(nullable = true)
+    private String avatarURL;
 
-
-    public Dipendente(String username, String nome, String cognome, String email) {
+    public Dipendente(String username, String nome, String cognome, String email, String avatarURL) {
         this.username = username;
         this.nome = nome;
         this.cognome = cognome;
         this.email = email;
+        this.avatarURL = avatarURL;
     }
+
 }

@@ -72,7 +72,8 @@ public class DipendenteController {
         this.dipendenteService.findByIdAndDelete(dipendenteId);
     }
 
-    // 6. PATCH http://localhost:1313/dipendenti/{dipendenteId}/avatar
+
+    // 6. PATCH per cambiare immagine http://localhost:1313/dipendenti/{dipendenteId}/avatar
     @PatchMapping("/{dipendenteId}/avatar")
     public String uploadAvatar(@PathVariable Long dipendenteId, @RequestParam("avatar") MultipartFile file) {
         // Qui potresti aggiungere logica per salvare l'avatar per il dipendente specifico
