@@ -15,6 +15,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class PrenotazioneService {
 
@@ -31,15 +33,16 @@ public class PrenotazioneService {
         return prenotazioneRepository.findAll(PageRequest.of(page, size, Sort.by(sortBy)));
     }
 
+    // salva prenotazione con controlli
     public Prenotazione save(NewPrenotazioneDTO body) {
-        Dipendente dipendente = dipendenteRepository.findById(body.dipendenteId())
-                .orElseThrow(() -> new ResourceNotFoundException("Dipendente " + body.dipendenteId() + " non trovato"));
-        Viaggio viaggio = viaggioRepository.findById(body.viaggioId())
-                .orElseThrow(() -> new ResourceNotFoundException("Viaggio" + body.viaggioId() + " non trovato"));
+        Dipendente dipendente = dipendenteRepository.findById(body.dipendenteId()).orElseThrow(() ->
+                new ResourceNotFoundException("Dipendente " + body.dipendenteId() + " non trovato"));
+        Viaggio viaggio = viaggioRepository.findById(body.viaggioId()).orElseThrow(() ->
+                new ResourceNotFoundException("Viaggio" + body.viaggioId() + " non trovato"));
 
-        // Verifica prenotazione duplicata
-        boolean prenotazioneEsistente = prenotazioneRepository.existsByDipendenteAndDataAndIdNot(dipendente, body.data(), prenotazioneRepository.count());
-        if (prenotazioneEsistente) {
+        // controllo se esiste già la prenotazione per la data
+        Optional<Prenotazione> prenotazioneEsistente = prenotazioneRepository.findByDipendenteAndData(dipendente, body.data());
+        if (prenotazioneEsistente.isPresent()) {
             throw new ConflictException("Esiste già una prenotazione per questo dipendente nella stessa data.");
         }
 
@@ -49,6 +52,7 @@ public class PrenotazioneService {
                 viaggio,
                 body.data()
         );
+        // se ok, salva
         return prenotazioneRepository.save(prenotazione);
     }
 
@@ -57,20 +61,22 @@ public class PrenotazioneService {
                 .orElseThrow(() -> new ResourceNotFoundException("Prenotazione non trovata con ID:" + prenotazioneId));
     }
 
+    // trova e aggiorna dipendente
     public Prenotazione findByIdAndUpdate(Long prenotazioneId, NewPrenotazioneDTO body) {
         Prenotazione prenotazione = this.findById(prenotazioneId);
+        // controlli se esistono le entità cercate
+        Dipendente dipendente = dipendenteRepository.findById(body.dipendenteId()).orElseThrow(() ->
+                new ResourceNotFoundException("Dipendente non trovato"));
+        Viaggio viaggio = viaggioRepository.findById(body.viaggioId()).orElseThrow(() ->
+                new ResourceNotFoundException("Viaggio non trovato"));
 
-        Dipendente dipendente = dipendenteRepository.findById(body.dipendenteId())
-                .orElseThrow(() -> new ResourceNotFoundException("Dipendente non trovato"));
-        Viaggio viaggio = viaggioRepository.findById(body.viaggioId())
-                .orElseThrow(() -> new ResourceNotFoundException("Viaggio non trovato"));
-
-        // Verifica prenotazione duplicata
-        boolean prenotazioneEsistente = prenotazioneRepository.existsByDipendenteAndDataAndIdNot(dipendente, body.data(), prenotazioneId);
-        if (prenotazioneEsistente) {
+        // sempre controllo prenotazione già esistente per la stessa datta
+        Optional<Prenotazione> prenotazioneEsistente = prenotazioneRepository.findByDipendenteAndData(dipendente, body.data());
+        if (prenotazioneEsistente.isPresent()) {
             throw new ConflictException("Esiste già una prenotazione per questo dipendente nella stessa data.");
         }
 
+        // aggiorna prenotazione
         prenotazione.setPreferenze(body.preferenze());
         prenotazione.setDipendente(dipendente);
         prenotazione.setViaggio(viaggio);
@@ -79,6 +85,7 @@ public class PrenotazioneService {
         return prenotazioneRepository.save(prenotazione);
     }
 
+    // trova e elimina prenotazione
     public void findByIdAndDelete(Long prenotazioneId) {
         Prenotazione prenotazione = this.findById(prenotazioneId);
         prenotazioneRepository.delete(prenotazione);

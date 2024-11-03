@@ -36,11 +36,10 @@ public class DipendenteService {
                 }
         );
 
-        // 2. Se è ok allora aggiungo i campi "server-generated" come ad esempio avatarURL
-        Dipendente newDipendente = new Dipendente(body.nome(), body.cognome(), body.email(), body.username(),
-                "https://ui-avatars.com/api/?name=" + body.nome() + "+" + body.cognome());
+        // 2. se è ok allora aggiungo i campi "server-generated" come ad esempio avatarURL
+        Dipendente newDipendente = new Dipendente(body.nome(), body.cognome(), body.email(), body.username(), "https://ui-avatars.com/api/?name=" + body.nome() + "+" + body.cognome());
 
-        // 3. Salvo il nuovo dipendente
+        // 3. salvo il nuovo dipendente
         return this.dipendenteRepository.save(newDipendente);
     }
 
@@ -64,14 +63,13 @@ public class DipendenteService {
 
         // 2. Verifica se l'email è già in uso da un altro dipendente
         if (!found.getEmail().equals(body.email())) {
-            this.dipendenteRepository.findByEmail(body.email()).ifPresent(
-                    Dipendente -> {
+            this.dipendenteRepository.findByEmail(body.email()).ifPresent(Dipendente -> {
                         throw new BadRequestException("Email " + body.email() + " già in uso!");
                     }
             );
         }
 
-        // 3. Aggiorna i campi del dipendente
+        // 3. aggiorna dipendente
         found.setUsername(body.username());
         found.setNome(body.nome());
         found.setCognome(body.cognome());

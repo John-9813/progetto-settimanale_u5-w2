@@ -33,10 +33,8 @@ public class PrenotazioneController {
     @ResponseStatus(HttpStatus.CREATED)
     public Prenotazione save(@RequestBody @Validated NewPrenotazioneDTO body, BindingResult validationResult) {
         if (validationResult.hasErrors()) {
-            String message = validationResult.getAllErrors()
-                    .stream()
-                    .map(objectError -> objectError.getDefaultMessage())
-                    .collect(Collectors.joining(". "));
+            String message = validationResult.getAllErrors().stream().map(objectError ->
+                    objectError.getDefaultMessage()).collect(Collectors.joining(". "));
             throw new BadRequestException("Ci sono stati errori nel payload! " + message);
         }
         return this.prenotazioneService.save(body);
@@ -54,10 +52,8 @@ public class PrenotazioneController {
                                           @RequestBody @Validated NewPrenotazioneDTO body,
                                           BindingResult validationResult) {
         if (validationResult.hasErrors()) {
-            String message = validationResult.getAllErrors()
-                    .stream()
-                    .map(objectError -> objectError.getDefaultMessage())
-                    .collect(Collectors.joining(". "));
+            String message = validationResult.getAllErrors().stream().map(objectError ->
+                    objectError.getDefaultMessage()).collect(Collectors.joining(". "));
             throw new BadRequestException("Ci sono stati errori nel payload! " + message);
         }
         return this.prenotazioneService.findByIdAndUpdate(prenotazioneId, body);

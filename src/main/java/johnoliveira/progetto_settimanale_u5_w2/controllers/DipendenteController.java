@@ -35,10 +35,8 @@ public class DipendenteController {
     @ResponseStatus(HttpStatus.CREATED)
     public Dipendente save(@RequestBody @Validated NewDipendenteDTO body, BindingResult validationResult) {
         if (validationResult.hasErrors()) {
-            String message = validationResult.getAllErrors()
-                    .stream()
-                    .map(objectError -> objectError.getDefaultMessage())
-                    .collect(Collectors.joining(". "));
+            String message = validationResult.getAllErrors().stream().map(objectError ->
+                    objectError.getDefaultMessage()).collect(Collectors.joining(". "));
             throw new BadRequestException("Ci sono stati errori nel payload! " + message);
         }
         return this.dipendenteService.save(body);
@@ -56,10 +54,8 @@ public class DipendenteController {
                                         @RequestBody @Validated NewDipendenteDTO body,
                                         BindingResult validationResult) {
         if (validationResult.hasErrors()) {
-            String message = validationResult.getAllErrors()
-                    .stream()
-                    .map(objectError -> objectError.getDefaultMessage())
-                    .collect(Collectors.joining(". "));
+            String message = validationResult.getAllErrors().stream().map(objectError ->
+                    objectError.getDefaultMessage()).collect(Collectors.joining(". "));
             throw new BadRequestException("Ci sono stati errori nel payload! " + message);
         }
         return this.dipendenteService.findByIdAndUpdate(dipendenteId, body);
@@ -75,8 +71,8 @@ public class DipendenteController {
 
     // 6. PATCH per cambiare immagine http://localhost:1313/dipendenti/{dipendenteId}/avatar
     @PatchMapping("/{dipendenteId}/avatar")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public String uploadAvatar(@PathVariable Long dipendenteId, @RequestParam("avatar") MultipartFile file) {
-        // Qui potresti aggiungere logica per salvare l'avatar per il dipendente specifico
         return this.dipendenteService.uploadAvatar(dipendenteId, file);
     }
 }
