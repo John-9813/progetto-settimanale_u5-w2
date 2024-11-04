@@ -37,7 +37,7 @@ public class DipendenteService {
         );
 
         // 2. se è ok allora aggiungo i campi "server-generated" come ad esempio avatarURL
-        Dipendente newDipendente = new Dipendente(body.nome(), body.cognome(), body.email(), body.username(), "https://ui-avatars.com/api/?name=" + body.nome() + "+" + body.cognome());
+        Dipendente newDipendente = new Dipendente(body.nome(), body.cognome(), body.email(), body.username(), body.password(), "https://ui-avatars.com/api/?name=" + body.nome() + "+" + body.cognome());
 
         // 3. salvo il nuovo dipendente
         return this.dipendenteRepository.save(newDipendente);
@@ -95,6 +95,10 @@ public class DipendenteService {
             throw new BadRequestException("problemi con l'upluad del file!");
         }
         return url;
+    }
+
+    public Dipendente findByEmail(String email) {
+        return this.dipendenteRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("L'utente con la email " + email + " non è stato trovato"));
     }
 }
 

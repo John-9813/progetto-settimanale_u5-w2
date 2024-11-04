@@ -17,6 +17,9 @@ public record NewDipendenteDTO(
         @NotEmpty(message = "La mail è obbligatoria!")
         // regex per la mail https://stackoverflow.com/questions/8204680/java-regex-email
         @Pattern(regexp = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\\\.[A-Z]{2,6}$")
-        String email
+        String email,
+        @NotEmpty(message = "La password è obbligatoria")
+        @Pattern(regexp = "^.*(?=.{8,})(?=..*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$")
+        String password
 ) {
 }

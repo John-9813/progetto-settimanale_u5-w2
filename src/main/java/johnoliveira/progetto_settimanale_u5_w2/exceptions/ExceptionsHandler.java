@@ -17,6 +17,12 @@ public class ExceptionsHandler {
         return new ErrorsRespDTO(ex.getMessage(), LocalDateTime.now());
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED) // 401
+    public ErrorsRespDTO handleUnauthorized(UnauthorizedException ex) {
+        return new ErrorsRespDTO(ex.getMessage(), LocalDateTime.now());
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND) // 404
     public ErrorsRespDTO handleNotFound(ResourceNotFoundException ex) {
