@@ -26,7 +26,7 @@ public class AuthController {
     private DipendenteService dipendenteService;
 
     @PostMapping("/login")
-    public DipLoginDTO login(@RequestBody DipLoginDTO body) {
+    public DipLoginResponseDTO login(@RequestBody DipLoginDTO body) {
         return new DipLoginResponseDTO(this.authService.checkCredentialAndGenerateToken(body));
     }
 
